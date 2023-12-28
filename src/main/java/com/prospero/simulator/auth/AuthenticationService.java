@@ -19,9 +19,11 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
+        var user = User.builder() // Make changes here in case user parameters updated
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .defaultLanguage(request.getDefaultLanguage())
+                .defaultCurrency(request.getDefaultCurrency())
                 .role(request.getRole())
                 .build();
         repository.save(user);
