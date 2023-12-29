@@ -25,6 +25,7 @@ public class AuthenticationService {
                 .defaultLanguage(request.getDefaultLanguage())
                 .defaultCurrency(request.getDefaultCurrency())
                 .role(request.getRole())
+                .calculations(request.getCalculations())
                 .build();
         repository.save(user);
         var token = jwtService.generateToken(user);
