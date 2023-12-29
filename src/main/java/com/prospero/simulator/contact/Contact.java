@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Contact {
 
     @Id
-    @Column(name="contact_id")
+    @GeneratedValue
     private Integer id;
     private String name;
     private String email;
@@ -26,6 +26,6 @@ public class Contact {
     @Enumerated(EnumType.STRING)
     private ContactState state;
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn
     private User resolvedBy;
 }

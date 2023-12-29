@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class Calculation {
     @Id
     @GeneratedValue
-    @Column(name="calculation_id")
     private Integer id;
     private String name;
     private String description;
@@ -24,6 +23,7 @@ public class Calculation {
     private String contributionAmount;
     @Enumerated(EnumType.STRING)
     private ContributionFrequency contributionFrequency;
+    @Enumerated(EnumType.STRING)
     private CapitalizationFrequency capitalizationFrequency;
     private Integer durationYears;
     private String interestRate;
@@ -32,7 +32,7 @@ public class Calculation {
     private Double inflatedPercentage;
     private Double finalAmount;
     private Long createdAt;
-    @ManyToOne
-    @JoinColumn(name="user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
     private User createdBy;
 }

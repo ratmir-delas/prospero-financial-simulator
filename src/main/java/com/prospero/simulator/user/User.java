@@ -1,7 +1,6 @@
 package com.prospero.simulator.user;
 
 import com.prospero.simulator.calculation.Calculation;
-import com.prospero.simulator.contact.Contact;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -23,7 +21,6 @@ import java.util.Set;
 public class User implements UserDetails {
 
     @Id
-    @Column(name="user_id")
     @GeneratedValue
     private Integer id;
     private String email;
@@ -32,8 +29,8 @@ public class User implements UserDetails {
     private String defaultCurrency;
     @Enumerated(EnumType.STRING)
     private Role role;
-//    @OneToMany(mappedBy="_calculation")
-//    private Set<Calculation> calculations;
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "createdBy")
+    private List<Calculation> calculations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
