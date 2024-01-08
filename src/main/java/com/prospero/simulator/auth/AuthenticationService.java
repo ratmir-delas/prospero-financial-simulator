@@ -25,12 +25,17 @@ public class AuthenticationService {
                 .defaultLanguage(request.getDefaultLanguage())
                 .defaultCurrency(request.getDefaultCurrency())
                 .role(request.getRole())
-                .calculations(request.getCalculations())
+                .emailVerified(request.isEmailVerified())
+                //.calculations(request.getCalculations())
                 .build();
         repository.save(user);
         var token = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
+                .userId(repository.findByEmail(request.getEmail()).orElseThrow().getId())
+                .email(user.getEmail())
+                .defaultLanguage(user.getDefaultLanguage())
+                .defaultCurrency(user.getDefaultCurrency())
                 .build();
     }
 
@@ -45,6 +50,10 @@ public class AuthenticationService {
         var token = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
+                .userId(user.getId())
+                .email(user.getEmail())
+                .defaultLanguage(user.getDefaultLanguage())
+                .defaultCurrency(user.getDefaultCurrency())
                 .build();
     }
 

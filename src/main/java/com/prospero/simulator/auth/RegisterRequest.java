@@ -19,5 +19,5 @@ public class RegisterRequest {
     private String defaultLanguage;
     private String defaultCurrency;
     private Role role;
-    private List<Calculation> calculations;
+    private boolean emailVerified;
 }

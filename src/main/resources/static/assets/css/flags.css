@@ -1,0 +1,125 @@
+/* Styles for the language dropdown container */
+.language-dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+/* Additional styles for the selected language button */
+.language-dropdown button {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+/* Show the dropdown content on button click */
+.language-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+.selected-flag, .option-flag {
+    width: 20px; /* Adjust the width as needed */
+    height: 20px; /* Adjust the height as needed */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+
+.flag-bg {
+    background-image: url("static/assets/img/flags/4x3/bg.svg");
+}
+
+.flag-hr {
+    background-image: url("static/assets/img/flags/4x3/hr.svg");
+}
+
+.flag-cs {
+    background-image: url("static/assets/img/flags/4x3/cz.svg");
+}
+
+.flag-da {
+    background-image: url("static/assets/img/flags/4x3/dk.svg");
+}
+
+.flag-nl {
+    background-image: url("static/assets/img/flags/4x3/nl.svg");
+}
+
+.flag-en {
+    background-image: url("static/assets/img/flags/4x3/gb.svg");
+}
+
+.flag-et {
+    background-image: url("static/assets/img/flags/4x3/et.svg");
+}
+
+.flag-fi {
+    background-image: url("static/assets/img/flags/4x3/fi.svg");
+}
+
+.flag-fr {
+    background-image: url("static/assets/img/flags/4x3/fr.svg");
+}
+
+.flag-de {
+    background-image: url("static/assets/img/flags/4x3/de.svg");
+}
+
+.flag-el {
+    background-image: url("static/assets/img/flags/4x3/gr.svg");
+}
+
+.flag-hu {
+    background-image: url("static/assets/img/flags/4x3/hu.svg");
+}
+
+.flag-ga {
+    background-image: url("static/assets/img/flags/4x3/ga.svg");
+}
+
+.flag-it {
+    background-image: url("static/assets/img/flags/4x3/it.svg");
+}
+
+.flag-lv {
+    background-image: url("static/assets/img/flags/4x3/lv.svg");
+}
+
+.flag-lt {
+    background-image: url("static/assets/img/flags/4x3/lt.svg");
+}
+
+.flag-mt {
+    background-image: url("static/assets/img/flags/4x3/mt.svg");
+}
+
+.flag-pl {
+    background-image: url("static/assets/img/flags/4x3/pl.svg");
+}
+
+.flag-pt {
+    background-image: url("static/assets/img/flags/4x3/pt.svg");
+}
+
+.flag-ro {
+    background-image: url("static/assets/img/flags/4x3/ro.svg");
+}
+
+.flag-sk {
+    background-image: url("static/assets/img/flags/4x3/sk.svg");
+}
+
+.flag-sl {
+    background-image: url("static/assets/img/flags/4x3/sl.svg");
+}
+
+.flag-es {
+    background-image: url("static/assets/img/flags/4x3/es.svg");
+}
+
+.flag-sv {
+    background-image: url("static/assets/img/flags/4x3/sv.svg");
+}

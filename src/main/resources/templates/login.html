@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <title th:text="#{login.title}"/>
+</head>
+<body>
+
+<header class="container mt-3">
+
+    <select id="languageSelect" class="dropdown language-dropdown" data-width="fit">
+        <option value="en" th:text="#{lang.en}"/>
+        <option value="bg" th:text="#{lang.bg}"/>
+        <option value="hr" th:text="#{lang.hr}"/>
+        <option value="cs" th:text="#{lang.cs}"/>
+        <option value="da" th:text="#{lang.da}"/>
+        <option value="nl" th:text="#{lang.nl}"/>
+        <option value="et" th:text="#{lang.et}"/>
+        <option value="fi" th:text="#{lang.fi}"/>
+        <option value="fr" th:text="#{lang.fr}"/>
+        <option value="de" th:text="#{lang.de}"/>
+        <option value="el" th:text="#{lang.el}"/>
+        <option value="hu" th:text="#{lang.hu}"/>
+        <option value="ga" th:text="#{lang.ga}"/>
+        <option value="it" th:text="#{lang.it}"/>
+        <option value="lv" th:text="#{lang.lv}"/>
+        <option value="lt" th:text="#{lang.lt}"/>
+        <option value="mt" th:text="#{lang.mt}"/>
+        <option value="pl" th:text="#{lang.pl}"/>
+        <option value="pt" th:text="#{lang.pt}"/>
+        <option value="ro" th:text="#{lang.ro}"/>
+        <option value="sk" th:text="#{lang.sk}"/>
+        <option value="sl" th:text="#{lang.sl}"/>
+        <option value="es" th:text="#{lang.es}"/>
+        <option value="sv" th:text="#{lang.sv}"/>
+    </select>
+
+</header>
+
+<div class="container mt-5">
+
+    <div class="row">
+        <div class="col-md-3 m-auto">
+            <h2 class="text-center" data-lang-key="heading" th:text="#{login.title}"/>
+            <form id="userForm" class="mt-2">
+                <div class="form-group mt-2">
+                    <label for="email" data-lang-key="emailLabel" th:text="#{login.email}"/>
+                    <input type="email" class="form-control mt-2" id="email" name="email" required>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="password" data-lang-key="passwordLabel" th:text="#{login.password}"/>
+                    <input type="password" class="form-control mt-2" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3" data-lang-key="registerButton" th:text="#{login.login}"/>
+            </form>
+            <div class="text-center mt-3">
+                <a href="/register" id="register" data-lang-key="registerLink" th:text="#{login.register}"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/cookie.js"></script>
+<script>
+    languageChange("login");
+
+    // Submit the form
+    $('#userForm').on('submit', function(e) {
+        e.preventDefault();
+
+        // Extract credentials from form
+        var email = $('#email').val();
+        var password = $('#password').val();
+
+        // AJAX POST request for authentication
+        $.ajax({
+            url: '/api/v1/auth/authenticate',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ email: email, password: password }),
+            success: function(response) {
+                // On successful authentication
+                // Store the received bearer token (adjust based on your API response)
+                var token = response.token;
+                var id = response.userId;
+                var email = response.email;
+                var defaultLanguage = response.defaultLanguage;
+                var defaultCurrency = response.defaultCurrency;
+
+                // Store the token in the browser's session storage
+                setCookie('authToken', token, 7);
+
+                // Store user details in local storage
+                var userDetails = {
+                    userId: id,
+                    userEmail: email,
+                    defaultLanguage: defaultLanguage,
+                    defaultCurrency: defaultCurrency
+                };
+                localStorage.setItem('userDetails', JSON.stringify(userDetails));
+
+                // pass to simulator
+                window.location.href = '/simulator';
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                alert("Authentication failed: " + xhr.responseText);
+            }
+        });
+    });
+
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <title th:text="#{register.title}"/>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3 m-auto">
+            <h2 class="text-center" data-lang-key="heading" th:text="#{register.title}"/>
+            <form id="userForm" class="mt-2">
+                <div class="form-group">
+                    <label for="languageSelect" data-lang-key="languageLabel" th:text="#{register.language}"/>
+                    <select id="languageSelect" class="form-control mt-2" name="language" onchange="" required>
+                        <option value="en" th:text="#{lang.en}"/>
+                        <option value="bg" th:text="#{lang.bg}"/>
+                        <option value="hr" th:text="#{lang.hr}"/>
+                        <option value="cs" th:text="#{lang.cs}"/>
+                        <option value="da" th:text="#{lang.da}"/>
+                        <option value="nl" th:text="#{lang.nl}"/>
+                        <option value="et" th:text="#{lang.et}"/>
+                        <option value="fi" th:text="#{lang.fi}"/>
+                        <option value="fr" th:text="#{lang.fr}"/>
+                        <option value="de" th:text="#{lang.de}"/>
+                        <option value="el" th:text="#{lang.el}"/>
+                        <option value="hu" th:text="#{lang.hu}"/>
+                        <option value="ga" th:text="#{lang.ga}"/>
+                        <option value="it" th:text="#{lang.it}"/>
+                        <option value="lv" th:text="#{lang.lv}"/>
+                        <option value="lt" th:text="#{lang.lt}"/>
+                        <option value="mt" th:text="#{lang.mt}"/>
+                        <option value="pl" th:text="#{lang.pl}"/>
+                        <option value="pt" th:text="#{lang.pt}"/>
+                        <option value="ro" th:text="#{lang.ro}"/>
+                        <option value="sk" th:text="#{lang.sk}"/>
+                        <option value="sl" th:text="#{lang.sl}"/>
+                        <option value="es" th:text="#{lang.es}"/>
+                        <option value="sv" th:text="#{lang.sv}"/>
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="currency" data-lang-key="currencyLabel" th:text="#{register.currency}"/>
+                    <select id="currency" class="form-control mt-2" name="currency" onchange="" required>
+                        <option value="EUR" th:text="#{currency.eur}"/>
+                        <option value="BGN" th:text="#{currency.bgn}"/>
+                        <option value="CZK" th:text="#{currency.czk}"/>
+                        <option value="DKK" th:text="#{currency.dkk}"/>
+                        <option value="HUF" th:text="#{currency.huf}"/>
+                        <option value="PLN" th:text="#{currency.pln}"/>
+                        <option value="RON" th:text="#{currency.ron}"/>
+                        <option value="SEK" th:text="#{currency.sek}"/>
+                        <option value="CHF" th:text="#{currency.chf}"/>
+                        <option value="TRY" th:text="#{currency.try}"/>
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="email" data-lang-key="emailLabel" th:text="#{register.email}"/>
+                    <input type="email" class="form-control mt-2" id="email" name="email" required>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="password" data-lang-key="passwordLabel" th:text="#{register.password}"/>
+                    <input type="password" class="form-control mt-2" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3" data-lang-key="registerButton" th:text="#{register.register}"/>
+            </form>
+            <!-- already have profile? Login -->
+            <div class="text-center mt-3">
+                <a href="login" id="login" data-lang-key="loginLink" th:text="#{register.login}"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/cookie.js"></script>
+<script>
+    languageChange("register");
+
+    $(document).ready(function() {
+        $('#userForm').on('submit', function(e) {
+            e.preventDefault();
+
+            // Extract registration details from form
+            const defaultLanguage = $('#languageSelect').val();
+            const defaultCurrency = $('#currency').val();
+            const email = $('#email').val();
+            const password = $('#password').val();
+
+            // AJAX POST request for registration
+            $.ajax({
+                url: '/api/v1/auth/register', // Adjust the URL to your registration endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    email: email,
+                    password: password,
+                    emailVerified: true,
+                    role: "USER",
+                    defaultLanguage: defaultLanguage,
+                    defaultCurrency: defaultCurrency
+                }),
+                success: function(response) {
+                    // Handle success (e.g., displaying a success message, redirecting, etc.)
+                    //alert('Registration successful');
+                    window.location.href = '/login'; // Redirect to login page or other page as needed
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors (e.g., displaying an error message)
+                    alert("Registration failed: " + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.75, maximum-scale=1.5, user-scalable=yes">
+    <title data-lang-key="title" th:text="#{simulator.title}"/>
+    <link rel="icon" href="/assets/img/budget.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.3/css/bootstrap.css">
+    <link rel="stylesheet" href="/assets/css/simulator.css">
+</head>
+<body>
+
+
+<header class="mt-3 d-flex justify-content-between">
+    <select id="languageSelect" class="language-dropdown" data-width="fit">
+        <option value="en" th:text="#{lang.en}"/>
+        <option value="bg" th:text="#{lang.bg}"/>
+        <option value="hr" th:text="#{lang.hr}"/>
+        <option value="cs" th:text="#{lang.cs}"/>
+        <option value="da" th:text="#{lang.da}"/>
+        <option value="nl" th:text="#{lang.nl}"/>
+        <option value="et" th:text="#{lang.et}"/>
+        <option value="fi" th:text="#{lang.fi}"/>
+        <option value="fr" th:text="#{lang.fr}"/>
+        <option value="de" th:text="#{lang.de}"/>
+        <option value="el" th:text="#{lang.el}"/>
+        <option value="hu" th:text="#{lang.hu}"/>
+        <option value="ga" th:text="#{lang.ga}"/>
+        <option value="it" th:text="#{lang.it}"/>
+        <option value="lv" th:text="#{lang.lv}"/>
+        <option value="lt" th:text="#{lang.lt}"/>
+        <option value="mt" th:text="#{lang.mt}"/>
+        <option value="pl" th:text="#{lang.pl}"/>
+        <option value="pt" th:text="#{lang.pt}"/>
+        <option value="ro" th:text="#{lang.ro}"/>
+        <option value="sk" th:text="#{lang.sk}"/>
+        <option value="sl" th:text="#{lang.sl}"/>
+        <option value="es" th:text="#{lang.es}"/>
+        <option value="sv" th:text="#{lang.sv}"/>
+    </select>
+
+    <div class="text-center mt-3">
+        <button class="btn btn-primary">
+            <a href="/logout-process" id="logout" data-lang-key="logout" th:text="#{logout}" style="text-decoration: none; color: white"></a>
+        </button>
+    </div>
+
+</header>
+
+<h2 id="title-simulator" data-lang-key="title" th:text="#{simulator.title}"/>
+
+<div id="container-simulator" class="">
+    <!-- Graphic section -->
+    <div id="container-graphic">
+        <div id="sub-container-graphic" class="text-center">
+            <div data-lang-key="futureBalance" th:text="#{simulator.futureBalance}"/>
+            <div class="h3" id="future_balance">?</div>
+            <canvas id="myChart"></canvas>
+        </div>
+        <div id="container-export">
+            <button id="btn-export-csv" class="btn btn-primary">&DownArrowBar; <span data-lang-key="exportData" th:text="#{simulator.exportData}"/></button>
+        </div>
+    </div>
+
+    <div id="container-spacing"></div>
+
+    <!-- Form section -->
+    <div id="container-form">
+        <div id="sub-container-form">
+            <!-- Form group for initial deposit -->
+            <div class="form-group mb-4">
+                <label for="initial_deposit" data-lang-key="initialDeposit" th:text="#{simulator.initialDeposit}"/>
+                <!-- Input with add and sub buttons -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-primary" type="button" data-counter="sub" data-field="initial_deposit">&minus;</button>
+                    </div>
+                    <input class="form-control text-center" id="initial_deposit" type="text" name="initial_deposit" min="100" max="1000000" step="100" value="5000€" data-value="5000" data-prepend="">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" data-counter="add" data-field="initial_deposit">&plus;</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form group for contributions  -->
+            <div class="form-group">
+                <label for="contribution_amount" data-lang-key="contributions" th:text="#{simulator.contributions}"/>
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary" type="button" data-counter="sub" data-field="contribution_amount">&minus;</button>
+                        </div>
+                        <input class="form-control text-center" id="contribution_amount" type="text" name="contribution_amount" min="0" max="10000" step="50" value="100€" data-value="100" data-prepend="">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button" data-counter="add" data-field="contribution_amount">&plus;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" id="contribution_period_annually" type="radio" name="contribution_period" value="1" checked>
+                    <label class="form-check-label" for="contribution_period_annually" data-lang-key="annual" th:text="#{simulator.annual}"/>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" id="contribution_period_monthly" type="radio" name="contribution_period" value="12">
+                    <label class="form-check-label" for="contribution_period_monthly" data-lang-key="monthly" th:text="#{simulator.monthly}"/>
+                </div>
+
+            </div>
+
+            <!-- Form group for investment period -->
+            <div class="form-group">
+                <label for="investment_timespan" data-lang-key="investmentDuration" th:text="#{simulator.investmentDuration}"/>
+                <div class="">
+                    <div class="">
+                        <input class="form-control" id="investment_timespan" type="range" name="investment_timespan" min="2" max="50" step="1" value="5">
+                    </div>
+                </div>
+                <span id="investment_timespan_text">5</span> <span data-lang-key="years" th:text="#{simulator.years}"/>
+            </div>
+
+            <!-- Group form for estimated return -->
+            <div class="form-group">
+                <label for="estimated_return" data-lang-key="estimatedReturn" th:text="#{simulator.estimatedReturn}"/>
+                <!-- Input with add and sub buttons -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-primary" type="button" data-counter="sub" data-field="estimated_return">&minus;</button>
+                    </div>
+                    <input class="form-control text-center" id="estimated_return" type="text" name="estimated_return" min="0" max="50" step="0.25" value="8%" data-value="8.00" data-append="%">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" data-counter="add" data-field="estimated_return">&plus;</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group form for estimated inflation rate -->
+            <div class="form-group">
+                <label for="estimated_inflation" data-lang-key="estimatedInflation" th:text="#{simulator.estimatedInflation}"/>
+                <!-- Input with add and sub buttons -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-primary" type="button" data-counter="sub" data-field="estimated_inflation">&minus;</button>
+                    </div>
+                    <input class="form-control text-center" id="estimated_inflation" type="text" name="estimated_inflation" min="0" max="50" step="0.25" value="3%" data-value="3.00" data-append="%">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" data-counter="add" data-field="estimated_inflation">&plus;</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group form for estimated tax -->
+            <div class="form-group">
+                <label for="estimated_tax" data-lang-key="estimatedTax" th:text="#{simulator.estimatedTax}"/>
+                <!-- Input with add and sub buttons -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-primary" type="button" data-counter="sub" data-field="estimated_tax">&minus;</button>
+                    </div>
+                    <input class="form-control text-center" id="estimated_tax" type="text" name="estimated_tax" min="0" max="50" step="0.25" value="20%" data-value="20.00" data-append="%">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" data-counter="add" data-field="estimated_tax">&plus;</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form group for capitalization frequency -->
+            <div class="form-group">
+                <div class="">
+                    <label data-lang-key="capitalizationFrequency" th:text="#{simulator.capitalizationFrequency}"/> <br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" id="compound_period_annually" type="radio" name="compound_period" value="1" checked>
+                        <label class="form-check-label" data-lang-key="annual" for="compound_period_annually" th:text="#{simulator.annual}"/>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" id="compound_period_monthly" type="radio" name="compound_period" value="12">
+                        <label class="form-check-label" data-lang-key="monthly" for="compound_period_monthly" th:text="#{simulator.monthly}"/>
+                    </div>
+
+<!--                    <div class="form-check form-check-inline">-->
+<!--                        <input class="form-check-input" id="compound_period_daily" type="radio" name="compound_period" value="365">-->
+<!--                        <label class="form-check-label" data-lang-key="daily" for="compound_period_daily" th:text="#{simulator.daily}"/>-->
+<!--                    </div>-->
+                </div>
+            </div>
+
+            <!-- Reset and save buttons -->
+            <div class="form-group">
+                <div class="input-group">
+                    <button id="button-reset" class="btn btn-primary btn-wide">&#x21bb; <span data-lang-key="resetButton" th:text="#{simulator.resetButton}"/></button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <button id="button-save" class="btn btn-primary btn-wide">&#128427; <span data-lang-key="saveCalculation" th:text="#{simulator.saveCalculation}"/></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- History section -->
+<div id="container-history" style="margin-top: 50px">
+    <div id="sub-container-history">
+        <div id="history">
+            <div id="history-title">
+                <h2 data-lang-key="history" th:text="#{history.title}"/>
+            </div>
+            <div id="history-content">
+                <div id="history-content-table">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col" data-lang-key="name" th:text="#{history.calculation.name}"/>
+                            <th scope="col" data-lang-key="description" class="history-additional-info" th:text="#{history.calculation.description}"/>
+                            <th scope="col" data-lang-key="initialDeposit" th:text="#{history.calculation.initialDeposit}"/>
+                            <th scope="col" data-lang-key="futureBalance" th:text="#{history.calculation.futureBalance}"/>
+                            <th scope="col" data-lang-key="action" th:text="#{history.calculation.action}"/>
+                        </tr>
+                        </thead>
+                        <tbody id="history-content-table-body">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/assets/js/cookie.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/simulator.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const simulator = {
+        // Define the properties and their default values
+        principalAmount: /*[[#{simulator.principalAmount}]]*/ 'default',
+        interest: /*[[#{simulator.interest}]]*/ 'default',
+        tax: /*[[#{simulator.tax}]]*/ 'default',
+        inflation: /*[[#{simulator.inflation}]]*/ 'default',
+        maxValueReached: /*[[#{simulator.maxValueReached}]]*/ 'default',
+        enterCalculationName: /*[[#{simulator.enterCalculationName}]]*/ 'default',
+        alreadyExists: /*[[#{simulator.alreadyExists}]]*/ 'default',
+        delete: /*[[#{simulator.delete}]]*/ 'default',
+        calculationNameRequired: /*[[#{simulator.calculationNameRequired}]]*/ 'default',
+        years: /*[[#{simulator.years}]]*/ 'default'
+        // ... add other properties as needed
+    };
+
+    languageChange("simulator");
+    /*]]>*/
+</script>
+</body>
+</html>

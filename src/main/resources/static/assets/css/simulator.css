@@ -1,0 +1,188 @@
+body {
+    width: 75%;
+    margin: auto;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.btn-wide {
+    width: 100%;
+}
+
+#title-simulator {
+    text-align: center;
+    margin-top: 1em;
+}
+
+/* Estilização dos rótulos (labels) */
+label {
+    font-weight: bold; /* Negrito */
+    margin-bottom: 5px; /* Espaçamento abaixo do rótulo */
+}
+
+/* Estilização dos elementos de rádio e checkbox */
+.form-check-input {
+    margin-top: 0.3em;
+    margin-left: 0;
+}
+
+.form-check-label {
+    margin-right: 15px; /* Espaçamento à direita do rótulo */
+}
+
+#container-history {
+    margin-top: 2em;
+}
+
+#sub-container-history {
+    width: 85%;
+    margin: auto;
+}
+
+#container-export {
+    display: flex;
+    justify-content: flex-end; /* This will push the button to the far right */
+    width: 100%; /* Make sure it spans the full width */
+    margin-top: 1.5em;
+}
+
+#btn-export-csv {
+    /*float: right;*/
+}
+
+
+/*////////// Responsiveness /////////////////*/
+/* Laptop */
+@media screen and (min-device-width: 1024px){
+    #container-simulator {
+        display: inline-block;
+        width: 100%;
+    }
+
+    #container-form {
+        width: 20%;
+        display: inline-block;
+        float: left;
+    }
+
+    #sub-container-form {
+        width: 100%;
+        margin: auto;
+    }
+
+    #container-graphic {
+        width: 80%;
+        display: inline-block;
+        float: right;
+        /*margin: auto;*/
+    }
+
+    #sub-container-graphic {
+        margin-left: auto;
+        width: 85%;
+    }
+}
+
+/* Tablet */
+@media screen and (min-device-width: 640px) and (max-device-width: 1024px) {
+    #container-form {
+        width: 100%;
+        margin-top: 2.5em;
+    }
+
+    #sub-container-form {
+        width: 40%;
+        margin: auto;
+    }
+
+    #container-graphic {
+        width: 100%;
+    }
+
+    #sub-container-graphic {
+        width: 85%;
+        margin: auto;
+    }
+
+    #btn-export-csv {
+        margin-bottom: 2em;
+    }
+
+    .container-export {
+        width: 100%;
+    }
+}
+
+/* Smartphones in landscape mode */
+@media screen and (max-device-width: 640px) {
+    #container-form {
+        width: 100%;
+        margin-top: 2.5em;
+    }
+
+    #sub-container-form {
+        width: 50%;
+        margin: auto;
+    }
+
+    #container-graphic {
+        width: 100%;
+    }
+
+    #sub-container-graphic {
+        width: 85%;
+        margin: auto;
+    }
+
+    #btn-export-csv {
+        margin-bottom: 2em;
+    }
+
+    .container-export {
+        width: 100%;
+    }
+}
+
+/* Smartphones in portrait mode */
+@media screen and (max-device-width: 480px) {
+    body {
+        width: 100%;
+        padding-left: 7%;
+        padding-right: 7%;
+    }
+
+    header {
+        width: 100%;
+        margin: auto;
+    }
+
+    #container-form {
+        width: 100%;
+    }
+
+    #sub-container-form {
+        width: 100%;
+        margin: auto;
+    }
+
+    #container-graphic {
+        width: 100%;
+    }
+
+    #sub-container-graphic {
+        width: 100%;
+        margin: auto;
+    }
+
+    .container-export {
+        width: 100%;
+    }
+
+    .history-additional-info {
+        display: none;
+    }
+}

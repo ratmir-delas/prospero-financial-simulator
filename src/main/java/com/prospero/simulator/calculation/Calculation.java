@@ -19,7 +19,7 @@ public class Calculation {
     private Integer id;
     private String name;
     private String description;
-    private String initialAmount;
+    private String initialDeposit;
     private String contributionAmount;
     @Enumerated(EnumType.STRING)
     private ContributionFrequency contributionFrequency;

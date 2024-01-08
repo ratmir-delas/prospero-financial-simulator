@@ -1,5 +1,6 @@
 package com.prospero.simulator.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.prospero.simulator.calculation.Calculation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,8 +30,15 @@ public class User implements UserDetails {
     private String defaultCurrency;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "createdBy")
-    private List<Calculation> calculations;
+//    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "createdBy")
+//    private List<Calculation> calculations;
+    @JsonIgnore
+    private boolean emailVerified = true;
+
+    public User(Integer id, String email) {
+        this.id = id;
+        this.email = email;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -64,6 +72,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return emailVerified;
     }
 }
