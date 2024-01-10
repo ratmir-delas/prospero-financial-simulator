@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface CalculationRepository extends JpaRepository<Calculation, Integer> {
 
-    @Query("SELECT c FROM Calculation c WHERE c.createdBy = ?1")
+    @Query("SELECT c FROM Calculation c WHERE c.createdBy.id = ?1")
     List<Calculation> findByUserId(Integer userId);
 
-    @Query("SELECT COUNT(c) FROM Calculation c WHERE c.createdBy = ?1")
+    @Query("SELECT COUNT(c) FROM Calculation c WHERE c.createdBy.id = ?1")
     int countByUserId(Integer userId);
 }

@@ -1,17 +1,14 @@
 package com.prospero.simulator.calculation;
 
-import com.prospero.simulator.user.User;
-import com.prospero.simulator.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping(path = "/api/v1/calculation")
+@RestController
+@RequestMapping("/api/v1/calculation/")
 public class CalculationController {
 
     private final CalculationService calculationService;
@@ -20,34 +17,34 @@ public class CalculationController {
     public CalculationController(CalculationService calculationService) {
         this.calculationService = calculationService;
     }
-
-    @GetMapping("/user/{userId}")
-    public List<Calculation> getCalculationsByUserId(@PathVariable Integer userId) {
-        return calculationService.getAllCalculationsByUserId(userId);
+    @GetMapping("user/{id}")
+    public List<Calculation> getCalculationsByUserId(@PathVariable Integer id) {
+        return calculationService.getAllCalculationsByUserId(id);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public Calculation getCalculation(@PathVariable Integer id) {
         return calculationService.getCalculation(id);
     }
 
-    @GetMapping("/")
+    @GetMapping()
     public List<Calculation> getCalculations() {
+        System.out.println("getCalculations: " + calculationService.getAllCalculations().size() + " calculations");
         return calculationService.getAllCalculations();
     }
 
-    @GetMapping("/count/{userId}")
+    @GetMapping("count/{userId}")
     public int countByUserId(@PathVariable Integer userId) {
         return calculationService.countByUserId(userId);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<?> deleteCalculation(@PathVariable Integer id) {
         calculationService.deleteCalculation(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<?> createCalculation(@RequestBody Calculation calculation) {
         // Logic to save the calculation
         Calculation savedCalculation = calculationService.saveCalculation(calculation);
@@ -55,7 +52,7 @@ public class CalculationController {
     }
 
 
-//    @GetMapping("/update/{id}")
+//    @PutMapping("/update/{id}")
 //    public void updateCalculation(@PathVariable Integer id) {
 //        Calculation calculation = calculationService.getCalculation(id);
 //        calculation.setName("Updated name");

@@ -32,7 +32,7 @@ public class Calculation {
     private Double inflatedPercentage;
     private Double finalAmount;
     private Long createdAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private User createdBy;
 }

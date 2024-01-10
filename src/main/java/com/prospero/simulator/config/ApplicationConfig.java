@@ -60,6 +60,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
 //    public void addViewControllers(ViewControllerRegistry registry) {
 //        registry.addViewController("/").setViewName("index");
 //        registry.addViewController("/login").setViewName("login");
+//        registry.addViewController("/logout-process").setViewName("logout");
 //        registry.addViewController("/register").setViewName("register");
 //        registry.addViewController("/simulator").setViewName("simulator");
 //    }
