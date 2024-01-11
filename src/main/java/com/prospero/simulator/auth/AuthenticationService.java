@@ -19,6 +19,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            return null;
+        }
         var user = User.builder() // Make changes here in case user parameters updated
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -40,13 +43,19 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        if (repository.findByEmail(request.getEmail()).isEmpty()) {
+            return null;
+        }
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return null;
+        }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
         var token = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)

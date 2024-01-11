@@ -16,6 +16,7 @@ import java.util.List;
 public class RegisterRequest {
     private String email;
     private String password;
+    private String confirmPassword;
     private String defaultLanguage;
     private String defaultCurrency;
     private Role role;

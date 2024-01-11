@@ -11855,5 +11855,14 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+.animated-background {
+  background-image: url("/assets/img/background/bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+html {
+  font-size: 1.05em;
+}
 
 /*# sourceMappingURL=main.css.map */

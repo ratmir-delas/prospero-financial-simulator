@@ -19,7 +19,18 @@
 <!-- Navigation-->
 <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-        <a class="navbar-brand" href="#">Start Bootstrap</a>
+<!--        <a class="navbar-brand" href="#">Start Bootstrap</a>-->
+        <select id="languageSelect" class="btn btn-outline-secondary" name="language" onchange="" required>
+            <option value="en" th:text="#{lang.en}"/>
+            <option value="fr" th:text="#{lang.fr}"/>
+            <option value="de" th:text="#{lang.de}"/>
+            <option value="es" th:text="#{lang.es}"/>
+            <option value="it" th:text="#{lang.it}"/>
+            <option value="pl" th:text="#{lang.pl}"/>
+            <option value="pt" th:text="#{lang.pt}"/>
+            <option value="sv" th:text="#{lang.sv}"/>
+            <option value="cs" th:text="#{lang.cs}"/>
+        </select>
         <a class="btn btn-primary" href="/register">Sign Up</a>
     </div>
 </nav>
