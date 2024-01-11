@@ -1,8 +1,11 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/spring_boot_security
-    username: postgres
-    password: 12345678pP
+    url: jdbc:postgresql://localhost:5432/prospero-server
+    #spring_boot_security
+    username: rbyxnvsunm
+    #postgres
+    password: OHJUT872VJER83PY$
+    #12345678pP
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -11,7 +14,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    database: postgresql
+    database: prospero-database
+    #postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   messages:
     basename: i18n/messages

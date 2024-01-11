@@ -1,68 +1,6 @@
-class CalculationData {
-    constructor(apiBaseUrl, authToken) {
-        this.apiBaseUrl = apiBaseUrl;
-        this.authToken = authToken;
-    }
-
-    _getHeaders() {
-        return {
-            'Authorization': `Bearer ${this.authToken}`,
-            'Content-Type': 'application/json'
-        };
-    }
-
-    saveCalculation(calculationData) {
-        return new Promise((resolve, reject) => {
-            fetch(`${this.apiBaseUrl}/calculation/`, {
-                method: 'POST',
-                headers: this._getHeaders(),
-                body: JSON.stringify(calculationData)
-            })
-                .then(response => response.json())
-                .then(data => resolve(data))
-                .catch(error => reject(error));
-        });
-    }
-
-    getCalculations(userId) {
-        return new Promise((resolve, reject) => {
-            fetch(`${this.apiBaseUrl}/calculation/user/${userId}`, {
-                method: 'GET',
-                headers: this._getHeaders()
-            })
-                .then(response => response.json())
-                .then(data => resolve(data))
-                .catch(error => reject(error));
-        });
-    }
-
-    deleteCalculation(id) {
-        return new Promise((resolve, reject) => {
-            fetch(`${this.apiBaseUrl}/calculation/`, {
-                method: 'DELETE',
-                headers: this._getHeaders(),
-                body: JSON.stringify({id: id})
-            })
-                .then(response => response.json())
-                .then(data => resolve(data))
-                .catch(error => reject(error));
-        });
-    }
-}
-
-function getUserInputValues() {
-    return {
-        initialDeposit: document.getElementById('initial_deposit').dataset.value,
-        contributionAmount: document.getElementById('contribution_amount').dataset.value,
-        contributionFrequency: document.querySelector('[name="contribution_period"]:checked').value,
-        investmentDuration: document.getElementById('investment_timespan').value,
-        estimatedReturn: document.getElementById('estimated_return').dataset.value,
-        estimatedInflation: document.getElementById('estimated_inflation').dataset.value,
-        estimatedTax: document.getElementById('estimated_tax').dataset.value,
-        // Add more fields as necessary
-    };
-}
-
+const authToken = getCookie('authToken');
+const apiBaseUrl = 'http://localhost/api/v1';
+const userDetails = JSON.parse(localStorage.getItem("userDetails"));
 
 function initializeInvestmentSimulator() {
 
@@ -466,7 +404,6 @@ function initializeHistorySection() {
     // Save calculation to history
     document.getElementById('button-save').addEventListener('click', function() {
 
-        const userData = JSON.parse(localStorage.getItem("userDetails"));
         //ask for calculation name
         const calculationData = {
             name: prompt(simulator.enterCalculationName),
@@ -481,10 +418,10 @@ function initializeHistorySection() {
             inflationRate: document.getElementById('estimated_inflation').value,
             finalAmount: parseFloat(document.getElementById('future_balance').innerHTML.replace(/€/, '').replace(/,/, '.')),
             createdAt: Date.now(),
-            createdBy: {id: userData.userId, email: userData.userEmail}
+            createdBy: {id: userDetails.userId, email: userDetails.userEmail}
         };
 
-        console.log(userData);
+        console.log(userDetails);
 
         // Check if the user entered a name
         if (!calculationData.name) {
@@ -494,12 +431,12 @@ function initializeHistorySection() {
 
         // Fetch function to post data to your API
         $.ajax({
-            url: '/api/v1/calculation/',
+            url: apiBaseUrl + '/calculation/',
             type: 'POST',
             dataType: 'json',
             contentType: 'application/json',
             headers: {
-                'Authorization': "Bearer " + getCookie("authToken")
+                'Authorization': "Bearer " + authToken
             },
             data: JSON.stringify(calculationData),
             success: function(data) {
@@ -516,16 +453,16 @@ function initializeHistorySection() {
     function getCalculations() {
         // Fetch function to get data from your API
         $.ajax({
-            url:'/api/v1/calculation/user/' + JSON.parse(localStorage.getItem("userDetails")).userId,
+            url: apiBaseUrl + '/calculation/user/' + JSON.parse(localStorage.getItem("userDetails")).userId,
             method: 'GET',
             dataType: 'json',
             contentType: 'application/json',
             headers: {
-                'Authorization': "Bearer " + getCookie("authToken")
+                'Authorization': "Bearer " + authToken
             },
             success: function(data) {
                 console.log('Success:', data);
-                replaceCalculationLocally(data);
+                replaceCalculationsLocally(data);
             },
             error: function(error) {
                 console.error('Error:', error);
@@ -533,22 +470,9 @@ function initializeHistorySection() {
         })
     }
 
-    // Function to save the calculation locally
-    function saveCalculationLocally(data) {
-        const history = JSON.parse(localStorage.getItem('calculationHistory')) || [];
-        history.push(data);
-        localStorage.setItem('calculationHistory', JSON.stringify(history));
-        updateHistory();
-    }
-
-    // Function to delete locally saved calculation and replace with new data
-    function replaceCalculationLocally(data) {
-        const history = JSON.parse(localStorage.getItem('calculationHistory')) || [];
-        const newHistory = history.filter(function(calculation) {
-            return calculation.id !== data.id;
-        });
-        newHistory.push(data);
-        localStorage.setItem('calculationHistory', JSON.stringify(newHistory));
+    // Function to delete locally saved calculations and replace with new data
+    function replaceCalculationsLocally(data) {
+        localStorage.setItem('calculationHistory', JSON.stringify(data));
         updateHistory();
     }
 
@@ -574,7 +498,6 @@ function initializeHistorySection() {
 
         // Loop through the calculations
         history.forEach(function(calculation) {
-            console.log(calculation);
             // Create a row for each calculation
             const row = document.createElement('tr');
 
@@ -588,22 +511,26 @@ function initializeHistorySection() {
             dateCell.innerHTML = new Date(calculation.createdAt).toLocaleDateString();
             row.appendChild(dateCell);
 
+            // Create a cell for the calculation initial deposit
+            const depositCell = document.createElement('td');
+            depositCell.innerHTML = calculation.initialDeposit;
+            row.appendChild(depositCell);
+
             // Create a cell for the calculation final amount
             const amountCell = document.createElement('td');
             amountCell.innerHTML = calculation.finalAmount + '€';
             row.appendChild(amountCell);
 
             // Create a cell for the delete button
-            const deleteCell = document.createElement('td');
+            const actionCell = document.createElement('td');
             const deleteButton = document.createElement('button');
             deleteButton.innerHTML = 'Delete';
             deleteButton.className = 'btn btn-danger';
             deleteButton.addEventListener('click', function() {
                 deleteCalculation(calculation.id);
-
             });
-            deleteCell.appendChild(deleteButton);
-            row.appendChild(deleteCell);
+            actionCell.appendChild(deleteButton);
+            row.appendChild(actionCell);
 
             // Add the row to the history section
             historySection.appendChild(row);
@@ -611,25 +538,28 @@ function initializeHistorySection() {
     }
 
 
-    // Function to delete a calculation
+        // Function to delete a calculation
     function deleteCalculation(id) {
         console.log('Delete calculation');
         // Fetch function to delete data from your API
-        fetch('/api/v1/calculation/', {
+        fetch(apiBaseUrl + '/calculation/' + id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({id: id}) // Modify as needed
+            body: JSON.stringify({id: id})
         })
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // Remove the row from the table
+                getCalculations();
+                updateHistory();
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
+        getCalculations();
+        updateHistory();
     }
 
     //
@@ -640,12 +570,6 @@ function initializeHistorySection() {
 
 // Initialize the simulator when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
-    const apiBaseUrl = 'http://localhost/api/v1/';
-    const authToken = getCookie('authToken');
-    const calculationData = new CalculationData(apiBaseUrl, authToken);
-    const userId = JSON.parse(localStorage.getItem("userDetails")).userId;
-    console.log("User id: " + userId);
-
     initializeInvestmentSimulator();
     initializeHistorySection();
 });
