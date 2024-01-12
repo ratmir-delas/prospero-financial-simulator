@@ -17,7 +17,6 @@
 </head>
 <body>
 
-
 <header class="mt-4 d-flex justify-content-between">
     <select id="languageSelect" class="btn btn-outline-secondary" data-width="fit">
         <option value="en" th:text="#{lang.en}"/>
@@ -66,6 +65,13 @@
 <div id="container-simulator" class="">
     <!-- Graphic section -->
     <div id="container-graphic">
+        <div id="simulator-results-explanation">
+            <div id="principal-amount" th:text="#{simulator.explanation.principalAmount}"></div>
+            <div id="interest-earned" th:text="#{simulator.explanation.interest}"></div>
+            <div id="tax-deduction" th:text="#{simulator.explanation.tax}"></div>
+            <div id="inflation-effect" th:text="#{simulator.explanation.inflation}"></div>
+            <div id="future-balance" th:text="#{simulator.explanation.futureBalance}"></div>
+        </div>
         <div id="sub-container-graphic" class="text-center">
             <div th:text="#{simulator.futureBalance}"/>
             <div class="h3" id="future_balance">?</div>
@@ -112,12 +118,12 @@
                 </div>
 
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" id="contribution_period_annually" type="radio" name="contribution_period" value="1" checked>
+                    <input class="form-check-input" id="contribution_period_annually" type="radio" name="contribution_period" value="1" data-value="ANNUAL" checked>
                     <label class="form-check-label" for="contribution_period_annually" th:text="#{simulator.annual}"/>
                 </div>
 
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" id="contribution_period_monthly" type="radio" name="contribution_period" value="12">
+                    <input class="form-check-input" id="contribution_period_monthly" type="radio" name="contribution_period" value="12" data-value="MONTHLY">
                     <label class="form-check-label" for="contribution_period_monthly" th:text="#{simulator.monthly}"/>
                 </div>
 
@@ -184,12 +190,12 @@
                 <div class="">
                     <label th:text="#{simulator.capitalizationFrequency}"/> <br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" id="compound_period_annually" type="radio" name="compound_period" value="1" checked>
+                        <input class="form-check-input" id="compound_period_annually" type="radio" name="compound_period" value="1" data-value="ANNUAL" checked>
                         <label class="form-check-label" for="compound_period_annually" th:text="#{simulator.annual}"/>
                     </div>
 
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" id="compound_period_monthly" type="radio" name="compound_period" value="12">
+                        <input class="form-check-input" id="compound_period_monthly" type="radio" name="compound_period" value="12" data-value="MONTHLY">
                         <label class="form-check-label" for="compound_period_monthly" th:text="#{simulator.monthly}"/>
                     </div>
 
@@ -227,13 +233,14 @@
                 <div id="history-content-table">
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
-                        <tr>
-                            <th scope="col" th:text="#{history.calculation.name}"/>
-                            <th scope="col" class="history-additional-info" th:text="#{history.calculation.description}"/>
-                            <th scope="col" th:text="#{history.calculation.initialDeposit}"/>
-                            <th scope="col" th:text="#{history.calculation.futureBalance}"/>
-                            <th scope="col" th:text="#{history.calculation.action}"/>
-                        </tr>
+                            <tr>
+                                <th scope="col" >#</th>
+                                <th scope="col" th:text="#{history.calculation.name}"/>
+                                <th scope="col" th:text="#{history.calculation.date}"/>
+                                <th scope="col" th:text="#{history.calculation.initialDeposit}"/>
+                                <th scope="col" th:text="#{history.calculation.futureBalance}"/>
+                                <th scope="col" th:text="#{history.calculation.action}"/>
+                            </tr>
                         </thead>
                         <tbody id="history-content-table-body">
 

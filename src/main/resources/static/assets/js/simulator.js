@@ -4,7 +4,6 @@ const userDetails = JSON.parse(localStorage.getItem("userDetails"));
 
 function initializeInvestmentSimulator() {
 
-    // Function to update the value of an input field
     const initial_deposit = document.querySelector('#initial_deposit'),
         contribution_amount = document.querySelector('#contribution_amount'),
         investment_timespan = document.querySelector('#investment_timespan'),
@@ -88,6 +87,10 @@ function initializeInvestmentSimulator() {
 
         future_balance.innerHTML = balance.toFixed(2) + '€';
 
+        // Update the descriptions
+        updateDescriptions(_initial_deposit, _contribution_frequency, _contribution_amount,
+            _estimated_return * 100, _estimatedTax * 100, _estimatedInflation * 100, _investment_duration, balance.toFixed(2) + '€');
+
         return {
             labels: labels,
             datasets: [principal_dataset, interest_dataset, tax_dataset, inflation_dataset]
@@ -107,6 +110,28 @@ function initializeInvestmentSimulator() {
 
         console.log('Chart updated')
     }
+
+    // Update descriptions
+    function updateDescriptions(principalAmount, contributionFrequency, contributionAmount,
+                                annualInterestRate, taxRate, inflationRate, investmentDuration, futureBalance) {
+
+        // Update text content of each div
+        document.getElementById('principal-amount').textContent =
+            `The base sum of your investment, initially set to ${principalAmount} with additional ${contributionFrequency} contributions of ${contributionAmount}. It represents the core capital on which interest is calculated.`;
+
+        document.getElementById('interest-earned').textContent =
+            `Earnings on your investment, calculated at an ${annualInterestRate} annual return rate. This is the profit generated from your principal over time.`;
+
+        document.getElementById('tax-deduction').textContent =
+            `Deductions from your earnings at an estimated tax rate of ${taxRate}. It indicates the amount of interest earned that you'll pay as taxes.`;
+
+        document.getElementById('inflation-effect').textContent =
+            `The decrease in purchasing power of your money, assuming a ${inflationRate} annual inflation rate. It reflects the cost of rising prices and its impact on the real value of your investment.`;
+
+        document.getElementById('future-balance').textContent =
+            `After ${investmentDuration} years, your investment's future balance is projected to be ${futureBalance}. This includes your principal amount, the interest earned, and is adjusted for taxes and inflation.`;
+    }
+
 
     // Graph configuration
     var ctx = document.getElementById('myChart').getContext('2d'),
@@ -404,16 +429,23 @@ function initializeHistorySection() {
     // Save calculation to history
     document.getElementById('button-save').addEventListener('click', function() {
 
+        // Retrieve the data-value attribute values
+        var contributionFrequency = document.querySelector('[name="contribution_period"]:checked').getAttribute('data-value');
+        var capitalizationFrequency = document.querySelector('[name="compound_period"]:checked').getAttribute('data-value');
+        console.log("Selected Value Contribution Frequency: " + contributionFrequency);
+        console.log("Selected Value Capitalization Frequency: " + capitalizationFrequency);
+
+
         //ask for calculation name
         const calculationData = {
             name: prompt(simulator.enterCalculationName),
             //description: prompt(simulator.enterCalculationName),
             initialDeposit: document.getElementById('initial_deposit').value,
             contributionAmount: document.getElementById('contribution_amount').value,
-            contributionFrequency: document.querySelector('[name="contribution_period"]:checked').value,
-            durationYears: document.getElementById('investment_timespan').value,
+            contributionFrequency: contributionFrequency,
+            durationYears: parseInt(document.getElementById('investment_timespan').value),
             interestRate: document.getElementById('estimated_return').value,
-            capitalizationFrequency: document.querySelector('[name="compound_period"]:checked').value,
+            capitalizationFrequency: capitalizationFrequency,
             incomeTaxRate: document.getElementById('estimated_tax').value,
             inflationRate: document.getElementById('estimated_inflation').value,
             finalAmount: parseFloat(document.getElementById('future_balance').innerHTML.replace(/€/, '').replace(/,/, '.')),
@@ -440,11 +472,11 @@ function initializeHistorySection() {
             },
             data: JSON.stringify(calculationData),
             success: function(data) {
-                console.log('Success:', data);
+                console.log('Success calculation POST:', data);
                 getCalculations();
             },
             error: function(error) {
-                console.error('Error:', error);
+                console.error('Error calculation POST:', error);
             }
         });
     });
@@ -479,7 +511,7 @@ function initializeHistorySection() {
     // Function to update history section
     function updateHistory() {
         // Get the calculation history from local storage
-        const history = JSON.parse(localStorage.getItem('calculationHistory')) || [];
+        const history = JSON.parse(localStorage.getItem('calculationHistory'));
 
         // Get the history section
         const historySection = document.getElementById('history-content-table-body');
@@ -498,41 +530,29 @@ function initializeHistorySection() {
 
         // Loop through the calculations
         history.forEach(function(calculation) {
+
+            var date = new Date(calculation.createdAt).toLocaleDateString('en-GB');
+
             // Create a row for each calculation
-            const row = document.createElement('tr');
+            var row = document.createElement('tr');
+            row.innerHTML = '<tr>' +
+                '<th scope="row">' + calculation.id + '</th>' +
+                '<td>' + calculation.name + '</td>' +
+                '<td>' + date + '</td>' +
+                '<td>' + calculation.initialDeposit + '</td>' +
+                '<td>' + calculation.finalAmount + '</td>' +
+                '<td><button class="btn btn-danger" data-calculation-id="' + calculation.id + '">Delete</button></td>' +
+                '</tr>';
 
-            // Create a cell for the calculation name
-            const nameCell = document.createElement('td');
-            nameCell.innerHTML = calculation.name;
-            row.appendChild(nameCell);
-
-            // Create a cell for the calculation date
-            const dateCell = document.createElement('td');
-            dateCell.innerHTML = new Date(calculation.createdAt).toLocaleDateString();
-            row.appendChild(dateCell);
-
-            // Create a cell for the calculation initial deposit
-            const depositCell = document.createElement('td');
-            depositCell.innerHTML = calculation.initialDeposit;
-            row.appendChild(depositCell);
-
-            // Create a cell for the calculation final amount
-            const amountCell = document.createElement('td');
-            amountCell.innerHTML = calculation.finalAmount + '€';
-            row.appendChild(amountCell);
-
-            // Create a cell for the delete button
-            const actionCell = document.createElement('td');
-            const deleteButton = document.createElement('button');
-            deleteButton.innerHTML = 'Delete';
-            deleteButton.className = 'btn btn-danger';
-            deleteButton.addEventListener('click', function() {
-                deleteCalculation(calculation.id);
+            // Add a click event listener to the historySection
+            historySection.addEventListener('click', function(event) {
+                if (event.target.classList.contains('btn-danger')) {
+                    var calculationId = event.target.getAttribute('data-calculation-id');
+                    deleteCalculation(calculationId);
+                }
             });
-            actionCell.appendChild(deleteButton);
-            row.appendChild(actionCell);
 
-            // Add the row to the history section
+            // Add the calculation to the history section
             historySection.appendChild(row);
         });
     }
