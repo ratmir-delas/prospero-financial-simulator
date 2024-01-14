@@ -39,7 +39,7 @@ label {
 }
 
 #sub-container-history {
-    width: 85%;
+    width: 100%;
     margin: auto;
 }
 
@@ -48,10 +48,6 @@ label {
     justify-content: flex-end; /* This will push the button to the far right */
     width: 100%; /* Make sure it spans the full width */
     margin-top: 1.5em;
-}
-
-#btn-export-csv {
-    /*float: right;*/
 }
 
 
@@ -108,12 +104,12 @@ label {
         margin: auto;
     }
 
-    #btn-export-csv {
-        margin-bottom: 2em;
-    }
-
     .container-export {
         width: 100%;
+    }
+
+    .history-additional-info-tablet {
+        display: none;
     }
 }
 
@@ -138,12 +134,12 @@ label {
         margin: auto;
     }
 
-    #btn-export-csv {
-        margin-bottom: 2em;
-    }
-
     .container-export {
         width: 100%;
+    }
+
+    .history-additional-info-tablet {
+        display: none;
     }
 }
 
@@ -182,7 +178,15 @@ label {
         width: 100%;
     }
 
-    .history-additional-info {
+    .history-additional-info-smartphone {
+        display: none;
+    }
+
+    .history-additional-info-tablet {
+        display: none;
+    }
+
+    .button-history-delete {
         display: none;
     }
 }

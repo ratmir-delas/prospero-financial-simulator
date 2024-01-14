@@ -52,11 +52,11 @@ public class CalculationController {
     }
 
 
-//    @PutMapping("/update/{id}")
-//    public void updateCalculation(@PathVariable Integer id) {
-//        Calculation calculation = calculationService.getCalculation(id);
-//        calculation.setName("Updated name");
-//        calculationService.updateCalculation(id, calculation);
-//    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateCalculation(@PathVariable Integer id, @RequestBody Calculation calculation) {
+        // Logic to save the calculation
+        Calculation savedCalculation = calculationService.updateCalculation(id, calculation);
+        return ResponseEntity.ok(savedCalculation);
+    }
 
 }

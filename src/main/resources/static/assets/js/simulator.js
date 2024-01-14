@@ -89,7 +89,8 @@ function initializeInvestmentSimulator() {
 
         // Update the descriptions
         updateDescriptions(_initial_deposit, _contribution_frequency, _contribution_amount,
-            _estimated_return * 100, _estimatedTax * 100, _estimatedInflation * 100, _investment_duration, balance.toFixed(2) + '€');
+            _estimated_return * 100, _estimatedTax * 100, _estimatedInflation * 100, _investment_duration, balance.toFixed(2));
+        console.log('After descriptions updated in getChartData()')
 
         return {
             labels: labels,
@@ -115,21 +116,16 @@ function initializeInvestmentSimulator() {
     function updateDescriptions(principalAmount, contributionFrequency, contributionAmount,
                                 annualInterestRate, taxRate, inflationRate, investmentDuration, futureBalance) {
 
-        // Update text content of each div
-        document.getElementById('principal-amount').textContent =
-            `The base sum of your investment, initially set to ${principalAmount} with additional ${contributionFrequency} contributions of ${contributionAmount}. It represents the core capital on which interest is calculated.`;
+        console.log(`#{simulator.explanation.principalAmount("234", "234", "324")}`)
 
-        document.getElementById('interest-earned').textContent =
-            `Earnings on your investment, calculated at an ${annualInterestRate} annual return rate. This is the profit generated from your principal over time.`;
+        document.getElementById('simulator-results-explanation').innerHTML = `
+            <div id="principal-amount" th:text="#{simulator.explanation.principalAmount(${principalAmount}, ${contributionFrequency}, ${contributionAmount})}"></div>
+            <div id="interest-earned" th:text="#{simulator.explanation.interest(${annualInterestRate})}"></div>
+            <div id="tax-deduction" th:text="#{simulator.explanation.tax(${taxRate})}"></div>
+            <div id="inflation-effect" th:text="#{simulator.explanation.inflation(${inflationRate})}"></div>
+            <div id="future-balance" th:text="#{simulator.explanation.futureBalance(${investmentDuration}, ${futureBalance})}"></div>
+        `;
 
-        document.getElementById('tax-deduction').textContent =
-            `Deductions from your earnings at an estimated tax rate of ${taxRate}. It indicates the amount of interest earned that you'll pay as taxes.`;
-
-        document.getElementById('inflation-effect').textContent =
-            `The decrease in purchasing power of your money, assuming a ${inflationRate} annual inflation rate. It reflects the cost of rising prices and its impact on the real value of your investment.`;
-
-        document.getElementById('future-balance').textContent =
-            `After ${investmentDuration} years, your investment's future balance is projected to be ${futureBalance}. This includes your principal amount, the interest earned, and is adjusted for taxes and inflation.`;
     }
 
 
@@ -422,9 +418,10 @@ function initializeInvestmentSimulator() {
 
     // Add this function to a button's click event
     document.getElementById('btn-export-csv').addEventListener('click', exportToCSV);
-}
 
-function initializeHistorySection() {
+
+
+    ////////////////////////////////////////////// HISTORY ///////////////////////////////////////////////////
 
     // Save calculation to history
     document.getElementById('button-save').addEventListener('click', function() {
@@ -440,14 +437,14 @@ function initializeHistorySection() {
         const calculationData = {
             name: prompt(simulator.enterCalculationName),
             //description: prompt(simulator.enterCalculationName),
-            initialDeposit: document.getElementById('initial_deposit').value,
-            contributionAmount: document.getElementById('contribution_amount').value,
+            initialDeposit: document.getElementById('initial_deposit').dataset.value,
+            contributionAmount: document.getElementById('contribution_amount').dataset.value,
             contributionFrequency: contributionFrequency,
             durationYears: parseInt(document.getElementById('investment_timespan').value),
-            interestRate: document.getElementById('estimated_return').value,
+            interestRate: document.getElementById('estimated_return').dataset.value,
             capitalizationFrequency: capitalizationFrequency,
-            incomeTaxRate: document.getElementById('estimated_tax').value,
-            inflationRate: document.getElementById('estimated_inflation').value,
+            incomeTaxRate: document.getElementById('estimated_tax').dataset.value,
+            inflationRate: document.getElementById('estimated_inflation').dataset.value,
             finalAmount: parseFloat(document.getElementById('future_balance').innerHTML.replace(/€/, '').replace(/,/, '.')),
             createdAt: Date.now(),
             createdBy: {id: userDetails.userId, email: userDetails.userEmail}
@@ -471,9 +468,10 @@ function initializeHistorySection() {
                 'Authorization': "Bearer " + authToken
             },
             data: JSON.stringify(calculationData),
-            success: function(data) {
+            success: function (data) {
                 console.log('Success calculation POST:', data);
                 getCalculations();
+                updateHistory();
             },
             error: function(error) {
                 console.error('Error calculation POST:', error);
@@ -492,7 +490,7 @@ function initializeHistorySection() {
             headers: {
                 'Authorization': "Bearer " + authToken
             },
-            success: function(data) {
+            success: function (data) {
                 console.log('Success:', data);
                 replaceCalculationsLocally(data);
             },
@@ -514,58 +512,133 @@ function initializeHistorySection() {
         const history = JSON.parse(localStorage.getItem('calculationHistory'));
 
         // Get the history section
-        const historySection = document.getElementById('history-content-table-body');
+        const tableContent = document.getElementById('history-content-table-body');
 
         // Clear the history section
-        historySection.innerHTML = '';
+        tableContent.innerHTML = '';
 
         // If there are no calculations, hide the history section
         if (history.length === 0) {
-            historySection.style.display = 'none';
+            document.getElementById('container-history').setAttribute("style", "display: none;")
             return;
+        } else {
+            document.getElementById('container-history').setAttribute("style", "display: block;")
         }
 
         // Show the history section
-        historySection.style.display = 'block';
+        //historySection.style.display = 'block';
+        var calculationNumber = 0;
 
         // Loop through the calculations
         history.forEach(function(calculation) {
+
+            // Increment the calculation number
+            calculationNumber++;
 
             var date = new Date(calculation.createdAt).toLocaleDateString('en-GB');
 
             // Create a row for each calculation
             var row = document.createElement('tr');
+            row.style.cursor = 'pointer';
+            //set class
+            row.setAttribute("class", "calculation-row");
+            row.setAttribute("class", "align-middle");
+            row.setAttribute("data-calculation-id", calculation.id);
             row.innerHTML = '<tr>' +
-                '<th scope="row">' + calculation.id + '</th>' +
+                '<th scope="row">' + calculationNumber + '</th>' +
                 '<td>' + calculation.name + '</td>' +
-                '<td>' + date + '</td>' +
-                '<td>' + calculation.initialDeposit + '</td>' +
-                '<td>' + calculation.finalAmount + '</td>' +
-                '<td><button class="btn btn-danger" data-calculation-id="' + calculation.id + '">Delete</button></td>' +
+                '<td class="history-additional-info-tablet">' + date + '</td>' +
+                '<td class="history-additional-info-smartphone">' + calculation.initialDeposit + '€</td>' +
+                '<td>' + calculation.finalAmount + '€</td>' +
+                '<td><button class="btn btn-danger align-content-md-center" data-calculation-id="' + calculation.id + '"><i class="material-icons align-middle" style="pointer-events: none">delete</i><span class="button-history-delete align-middle" style="pointer-events: none">' + simulator.delete + '</span></button></td>' +
                 '</tr>';
 
             // Add a click event listener to the historySection
-            historySection.addEventListener('click', function(event) {
-                if (event.target.classList.contains('btn-danger')) {
-                    var calculationId = event.target.getAttribute('data-calculation-id');
-                    deleteCalculation(calculationId);
-                }
-            });
+            // row.addEventListener('click', function(event) {
+            //     var calculationId = event.target.getAttribute('data-calculation-id');
+            //
+            //     // Add a click event listener to the delete button
+            //     row.querySelector('.btn-danger').addEventListener('click', function() {
+            //         var calculationId = event.target.getAttribute('data-calculation-id');
+            //         deleteCalculation(calculationId);
+            //     });
+            //
+            //     var calculation = history.find(c => c.id === calculationId);
+            //     if (calculation) {
+            //         restoreCalculationValues(calculation);
+            //         console.log('Calculation restored')
+            //     } else {
+            //         console.log('Calculation not found on restore')
+            //     }
+            // });
+
 
             // Add the calculation to the history section
-            historySection.appendChild(row);
+            tableContent.appendChild(row);
+
+            console.log('History updated');
+        });
+
+        // Delegate the click event to the table
+        tableContent.addEventListener('click', function(event) {
+            const calculationId = event.target.closest('tr').getAttribute('data-calculation-id');
+
+            // Check if the clicked element is a delete button
+            if (event.target.classList.contains('btn-danger')) {
+                deleteCalculation(calculationId);
+            } else {
+                // Handle row click for restore calculation
+                var calculation = history.find(c => c.id == calculationId);
+                if (calculation) {
+                    restoreCalculationValues(calculation);
+                    console.log('Calculation restored');
+                } else {
+                    console.log('Calculation not found on restore');
+                }
+            }
         });
     }
 
+    function restoreCalculationValues(calculation) {
+        // Update the input fields
+        document.getElementById('initial_deposit').value = calculation.initialDeposit + '€';
+        document.getElementById('initial_deposit').dataset.value = calculation.initialDeposit;
+        document.getElementById('contribution_amount').value = calculation.contributionAmount + '€';
+        document.getElementById('contribution_amount').dataset.value = calculation.contributionAmount;
+        if (calculation.contributionFrequency === 'ANNUAL') {
+            document.getElementById('contribution_period_annually').checked = true;
+        } else if (calculation.contributionFrequency === 'MONTHLY') {
+            document.getElementById('contribution_period_monthly').checked = true;
+        }
+        document.getElementById('investment_timespan').value = calculation.durationYears;
+        document.getElementById('investment_timespan_text').innerHTML = calculation.durationYears;
+        document.getElementById('estimated_return').value = calculation.interestRate + '%';
+        document.getElementById('estimated_return').dataset.value = calculation.interestRate;
+        document.getElementById('estimated_inflation').value = calculation.inflationRate + '%';
+        document.getElementById('estimated_inflation').dataset.value = '3.00';
+        document.getElementById('estimated_tax').value = calculation.incomeTaxRate + '%';
+        document.getElementById('estimated_tax').dataset.value = calculation.incomeTaxRate;
+        if (calculation.capitalizationFrequency === 'ANNUAL') {
+            document.getElementById('compound_period_annually').checked = true;
+        } else if (calculation.capitalizationFrequency === 'MONTHLY') {
+            document.getElementById('compound_period_monthly').checked = true;
+        }
 
-        // Function to delete a calculation
+        // Update the chart and other UI elements
+        updateChart();
+        // Any other updates required...
+    }
+
+
+    // Function to delete a calculation
     function deleteCalculation(id) {
         console.log('Delete calculation');
         // Fetch function to delete data from your API
         fetch(apiBaseUrl + '/calculation/' + id, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
             },
             body: JSON.stringify({id: id})
         })
@@ -573,23 +646,21 @@ function initializeHistorySection() {
             .then(data => {
                 console.log('Success:', data);
                 getCalculations();
-                updateHistory();
+                //updateHistory();
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
-        getCalculations();
-        updateHistory();
+        // getCalculations();
+        // updateHistory();
     }
 
     //
     getCalculations();
     updateHistory();
-
 }
 
 // Initialize the simulator when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
     initializeInvestmentSimulator();
-    initializeHistorySection();
 });

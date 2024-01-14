@@ -41,12 +41,18 @@ public class CalculationService {
         return calculation;
     }
 
-//    public void updateCalculation(Integer id, Calculation calculation) {
-//        Calculation calculationToUpdate = calculationRepository.findById(id).orElseThrow();
-//        calculationToUpdate.setName(calculation.getName());
-//        calculationToUpdate.setInitialAmount(calculation.getInitialAmount());
-//        calculationToUpdate.setContributionAmount(calculation.getContributionAmount());
-//        calculationToUpdate.setContributionFrequency(calculation.getContributionFrequency());
-//        calculationRepository.save(calculationToUpdate);
-//    }
+    public Calculation updateCalculation(Integer id, Calculation calculation) {
+        Calculation calculationToUpdate = calculationRepository.findById(id).orElseThrow();
+        calculationToUpdate.setName(calculation.getName());
+        calculationToUpdate.setContributionAmount(calculation.getContributionAmount());
+        calculationToUpdate.setContributionFrequency(calculation.getContributionFrequency());
+        calculationToUpdate.setCapitalizationFrequency(calculation.getCapitalizationFrequency());
+        calculationToUpdate.setInterestRate(calculation.getInterestRate());
+        calculationToUpdate.setCreatedAt(calculation.getCreatedAt());
+        calculationToUpdate.setIncomeTaxRate(calculation.getIncomeTaxRate());
+        calculationToUpdate.setInflationRate(calculation.getInflationRate());
+        calculationToUpdate.setInitialDeposit(calculation.getInitialDeposit());
+        calculationRepository.save(calculationToUpdate);
+        return calculationToUpdate;
+    }
 }
