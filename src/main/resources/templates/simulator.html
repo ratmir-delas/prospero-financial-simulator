@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.75, maximum-scale=1.5, user-scalable=false">
     <title th:text="#{simulator.title}"/>
     <link rel="icon" href="/assets/img/icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.3/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/simulator.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="/assets/js/jquery.min.js"></script>
@@ -66,21 +66,25 @@
 <div id="container-simulator" class="">
     <!-- Graphic section -->
     <div id="container-graphic">
-        <div id="simulator-results-explanation">
-            <div id="principal-amount" th:text="#{simulator.explanation.principalAmount(${principalAmount}, ${contributionFrequency}, ${contributionAmount})}"></div>
-            <div id="interest-earned" th:text="#{simulator.explanation.interest(${annualInterestRate})}"></div>
-            <div id="tax-deduction" th:text="#{simulator.explanation.tax(${taxRate})}"></div>
-            <div id="inflation-effect" th:text="#{simulator.explanation.inflation(${inflationRate})}"></div>
-            <div id="future-balance" th:text="#{simulator.explanation.futureBalance(${investmentDuration}, ${futureBalance})}"></div>
-        </div>
 
-        <div id="sub-container-graphic" class="text-center">
+        <div id="sub-container-graphic" class="text-center graphic-sub-container-content">
             <div th:text="#{simulator.futureBalance}"/>
             <div class="h3" id="future_balance">?</div>
             <canvas id="myChart"></canvas>
         </div>
+
         <div id="container-export">
-            <button id="btn-export-csv" class="btn btn-primary">&DownArrowBar; <span th:text="#{simulator.exportData}"/></button>
+<!--            <button id="btn-explanation" class="btn btn-outline-secondary">-->
+<!--                <i class="material-icons align-middle">info</i> <span th:text="#{simulator.explanation}"/>-->
+<!--            </button>-->
+
+            <button id="btn-export-csv" class="btn btn-primary">
+                <i class="material-icons align-middle">download</i> <span th:text="#{simulator.exportData}"/>
+            </button>
+        </div>
+
+        <div id="simulator-results-explanation" class="graphic-sub-container-content card card-body collapse collapsed">
+
         </div>
     </div>
 
@@ -269,11 +273,20 @@
         delete: /*[[#{simulator.delete}]]*/ 'default',
         calculationNameRequired: /*[[#{simulator.calculationNameRequired}]]*/ 'default',
         years: /*[[#{simulator.years}]]*/ 'default',
+        monthly: /*[[#{simulator.monthly}]]*/ 'default',
+        annual: /*[[#{simulator.annual}]]*/ 'default',
         // ... add other properties as needed
     };
 
+    const principalAmountExplanation = /*[[#{simulator.explanation.principalAmount}]]*/ 'default';
+    const interestExplanation = /*[[#{simulator.explanation.interest}]]*/ 'default';
+    const taxExplanation = /*[[#{simulator.explanation.tax}]]*/ 'default';
+    const inflationExplanation = /*[[#{simulator.explanation.inflation}]]*/ 'default';
+    const futureBalanceExplanation = /*[[#{simulator.explanation.futureBalance}]]*/ 'default';
+
     languageChange("simulator");
     /*]]>*/
+
 </script>
 </body>
 </html>

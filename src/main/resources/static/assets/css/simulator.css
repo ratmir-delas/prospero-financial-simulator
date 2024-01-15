@@ -1,6 +1,7 @@
 body {
     width: 75%;
     margin: auto;
+    padding-bottom: 1.5em;
 }
 
 header {
@@ -50,6 +51,13 @@ label {
     margin-top: 1.5em;
 }
 
+#simulator-results-explanation {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1.2em;
+    text-align: justify;
+}
+
 
 /*////////// Responsiveness /////////////////*/
 /* Laptop */
@@ -77,9 +85,12 @@ label {
         /*margin: auto;*/
     }
 
-    #sub-container-graphic {
+    .graphic-sub-container-content {
         margin-left: auto;
         width: 85%;
+    }
+    #simulator-results-explanation {
+        display: block;
     }
 }
 
@@ -111,6 +122,10 @@ label {
     .history-additional-info-tablet {
         display: none;
     }
+
+    #simulator-results-explanation {
+        display: none;
+    }
 }
 
 /* Smartphones in landscape mode */
@@ -139,6 +154,10 @@ label {
     }
 
     .history-additional-info-tablet {
+        display: none;
+    }
+
+    #simulator-results-explanation {
         display: none;
     }
 }
@@ -187,6 +206,10 @@ label {
     }
 
     .button-history-delete {
+        display: none;
+    }
+
+    #simulator-results-explanation {
         display: none;
     }
 }

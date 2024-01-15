@@ -1,5 +1,5 @@
 const authToken = getCookie('authToken');
-const apiBaseUrl = 'http://localhost/api/v1';
+const apiBaseUrl = '/api/v1';
 const userDetails = JSON.parse(localStorage.getItem("userDetails"));
 
 function initializeInvestmentSimulator() {
@@ -90,7 +90,7 @@ function initializeInvestmentSimulator() {
         // Update the descriptions
         updateDescriptions(_initial_deposit, _contribution_frequency, _contribution_amount,
             _estimated_return * 100, _estimatedTax * 100, _estimatedInflation * 100, _investment_duration, balance.toFixed(2));
-        console.log('After descriptions updated in getChartData()')
+        console.log('updateDescriptions called with', _initial_deposit, _contribution_frequency, _contribution_amount, _estimated_return, _estimatedTax, _estimatedInflation, _investment_duration, balance);
 
         return {
             labels: labels,
@@ -116,14 +116,26 @@ function initializeInvestmentSimulator() {
     function updateDescriptions(principalAmount, contributionFrequency, contributionAmount,
                                 annualInterestRate, taxRate, inflationRate, investmentDuration, futureBalance) {
 
-        console.log(`#{simulator.explanation.principalAmount("234", "234", "324")}`)
+        if (contributionFrequency === 1) {
+            contributionFrequency = simulator.annual;
+        } else if (contributionFrequency === 12) {
+            contributionFrequency = simulator.monthly;
+        }
+
+        // Update the description
+        let principalAmountText = principalAmountExplanation.replace("{0}", principalAmount + "€").replace("{1}", contributionFrequency).replace("{2}", contributionAmount + "€");
+        let interestEarnedText = interestExplanation.replace("{0}", annualInterestRate).replace("{1}", taxRate + "%");
+        let taxExplanationText = taxExplanation.replace("{0}", taxRate + "%");
+        let inflationEffectText = inflationExplanation.replace("{0}", inflationRate + "%");
+        let futureBalanceText = futureBalanceExplanation.replace("{0}", investmentDuration).replace("{1}", futureBalance + "€");
 
         document.getElementById('simulator-results-explanation').innerHTML = `
-            <div id="principal-amount" th:text="#{simulator.explanation.principalAmount(${principalAmount}, ${contributionFrequency}, ${contributionAmount})}"></div>
-            <div id="interest-earned" th:text="#{simulator.explanation.interest(${annualInterestRate})}"></div>
-            <div id="tax-deduction" th:text="#{simulator.explanation.tax(${taxRate})}"></div>
-            <div id="inflation-effect" th:text="#{simulator.explanation.inflation(${inflationRate})}"></div>
-            <div id="future-balance" th:text="#{simulator.explanation.futureBalance(${investmentDuration}, ${futureBalance})}"></div>
+            <div id="principal-amount">` + principalAmountText + `</div>
+            <div id="interest-earned">` + interestEarnedText + `</div>
+            <div id="tax-deduction">` + taxExplanationText + `</div>
+            <div id="inflation-effect">` + inflationEffectText + `</div>
+            <div id="future-balance">` + futureBalanceText + `</div>
+
         `;
 
     }
@@ -518,7 +530,7 @@ function initializeInvestmentSimulator() {
         tableContent.innerHTML = '';
 
         // If there are no calculations, hide the history section
-        if (history.length === 0) {
+        if (history === null || history.length === 0) {
             document.getElementById('container-history').setAttribute("style", "display: none;")
             return;
         } else {
